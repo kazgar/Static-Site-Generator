@@ -6,4 +6,5 @@ def main():
     print(textnode.__repr__())
 
 
-main()
+if __name__ == "__main__":
+    main()

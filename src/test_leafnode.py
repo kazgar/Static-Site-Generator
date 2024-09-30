@@ -19,9 +19,12 @@ class TestLeafNode(unittest.TestCase):
             raise Exception("to_html not working properly")
         
     def test_skip_value(self):
-        node = LeafNode(value=None, tag="tag", props=None)
-        if not node:
-            raise Exception("value argument has been skipped")
+        try:
+            node = LeafNode(tag="tag", props=None)
+        except:
+            return True
+        raise Exception("\n!!!\nLeafNode has been created without value error\n!!!\n")
+
     
     def test_different_tags(self):
         node = LeafNode("value", None)

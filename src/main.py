@@ -1,8 +1,36 @@
 from textnode import TextNode
 from leafnode import LeafNode
 
+text_type_text="text"
+text_type_bold="bold"
+text_type_italic="italic"
+text_type_code="code"
+text_type_link="link"
+text_type_image="image"
+
 def main():
     testing_text_to_html_node(should_test=False)
+    node = TextNode("normal text /#italic text/# normal text", text_type_text)
+    new_nodes = split_nodes_delimiter([node], "/#", text_type_italic)
+    print(new_nodes)
+
+    
+    
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    list_of_nodes = []
+    for node in old_nodes:
+        if node.text_type == "text":
+            nodes_text = node.text.split(delimiter)
+            for i in range(len(nodes_text)):
+                if i % 2 == 1:
+                    list_of_nodes.append(TextNode(text=nodes_text[i], text_type=text_type))
+                else:
+                    list_of_nodes.append(TextNode(text=nodes_text[i], text_type=text_type_text))
+        else:
+            list_of_nodes.append(node)
+    return list_of_nodes
+
+
 
 def text_node_to_html_node(text_node):
     text_types = [
@@ -31,6 +59,8 @@ def text_node_to_html_node(text_node):
     if text_node_text_type == "image":
         return LeafNode(tag="img", props={"src": text_node.url, "alt": text_node.text}, value="")
     
+
+
 def testing_text_to_html_node(should_test):
     if should_test:
         text_textnode = TextNode("text_text_node", "text", None)
@@ -48,5 +78,7 @@ def testing_text_to_html_node(should_test):
         image_node_to_leaf = text_node_to_html_node(image_textnode)
         print(image_node_to_leaf.__repr__())
     
+
+
 if __name__ == "__main__":
     main()

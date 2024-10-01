@@ -1,5 +1,6 @@
 from textnode import TextNode
 from leafnode import LeafNode
+import re
 
 text_type_text="text"
 text_type_bold="bold"
@@ -10,10 +11,12 @@ text_type_image="image"
 
 def main():
     testing_text_to_html_node(should_test=False)
-    node = TextNode("normal text /#italic text/# normal text", text_type_text)
-    new_nodes = split_nodes_delimiter([node], "/#", text_type_italic)
-    print(new_nodes)
 
+    text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+    extracted_alttext_and_url = extract_markdown_images(text)
+    print(extracted_alttext_and_url)
+    text2 = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+    print(extract_markdown_links(text2))
     
     
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -78,6 +81,17 @@ def testing_text_to_html_node(should_test):
         image_node_to_leaf = text_node_to_html_node(image_textnode)
         print(image_node_to_leaf.__repr__())
     
+
+
+def extract_markdown_images(text):
+    extracted = re.findall(r"!\[(.*?)\]\((.*?)\)", text)
+    return extracted
+
+
+
+def extract_markdown_links(text):
+    extracted = re.findall(r"(?<!!)\[(.*?)\]\((.*?)\)", text)
+    return extracted
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 from textnode import TextNode
 from leafnode import LeafNode
+from block_markdown import *
+from inline_markdown import *
 
 def main():
     return

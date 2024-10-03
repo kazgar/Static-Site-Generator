@@ -1,4 +1,48 @@
+from htmlnode import HTMLNode
+from inline_markdown import *
+
 text = "# This is a heading\n\nThis is a paragraph of text. It has some **bold** and *italic* words inside of it.\n\n* This is the first list item in a list block\n* This is a list item\n* This is another list item"
+
+block_types_to_html_tags = {
+    "paragraph": "p",
+    "heading": "h",
+    "unordered_list": "ul",
+    "ordered_list": "ol",
+    "quote": "blockquote",
+    "code": ["pre", "code"]
+}
+
+
+def markdown_to_html_node(markdown):
+    markdown_blocks = markdown_to_blocks(markdown)
+    list_of_nodes = []
+    for block in markdown_blocks:
+        block_type = block_to_block_type(block)
+        if not block_type == "code":
+            children = text_to_children(block)
+            list_of_nodes.append(HTMLNode(tag=block_types_to_html_tags[block_type], value=None, children=children))
+        else:
+            child = HTMLNode(tag=block_types_to_html_tags[block_type][1], value=block, children=None)
+            list_of_nodes.append(HTMLNode(tag=block_types_to_html_tags[block_type][0], value=None, children=[child]))
+
+    return HTMLNode(tag="div", value=None, children=list_of_nodes)
+    
+def text_to_children(block):
+    nodes = text_to_textnodes(block)
+    html_nodes = []
+    for node in nodes:
+        if node.text_type == text_type_text:
+            html_nodes.append(HTMLNode(tag=None, value=node.text))
+        if node.text_type == text_type_bold:
+            html_nodes.append(HTMLNode(tag="strong", value=node.text))
+        if node.text_type == text_type_italic:
+            html_nodes.append(HTMLNode(tag="em", value=node.text))
+        if node.text_type == text_type_link:
+            html_nodes.append(HTMLNode(tag="a", value=node.text, children=None, props={"href": node.url}))
+        if node.text_type == text_type_image:
+            html_nodes.append(HTMLNode(tag="img", value=None, children=None, props={"src": node.url, "alt": node.text}))
+    return html_nodes
+
 
 
 def markdown_to_blocks(markdown):
@@ -33,10 +77,5 @@ def block_to_block_type(block):
         return "ordered_list"
     
     return "paragraph"
-
-def markdown_to_html_node(markdown):
-    markdown_blocks = markdown_to_blocks(markdown)
-    
-    return
 
 
